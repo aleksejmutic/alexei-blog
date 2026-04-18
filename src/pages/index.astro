@@ -1,11 +1,107 @@
 ---
-import Welcome from '../components/Welcome.astro';
-import Layout from '../layouts/Layout.astro';
+import Layout from "../layouts/PublicLayout.astro";
+import { supabase } from "../lib/supabase";
+import { formatDateNoYear } from "../lib/formatDate";
 
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+export const prerender = false;
+
+type Post = {
+  id: string;
+  title: string;
+  slug: string;
+  content: string;
+  description?: string | null;
+  created_at: string;
+  updated_at?: string;
+  is_published: boolean;
+};
+
+const { data: posts } = await supabase
+  .from("posts")
+  .select("*")
+  .eq("is_published", true)
+  .order("created_at", { ascending: false })
+  .returns<Post[]>();
+
+const safePosts = posts ?? [];
+
+const grouped = safePosts.reduce(
+  (acc, post) => {
+    const year = new Date(post.created_at).getFullYear();
+
+    if (!acc[year]) acc[year] = [];
+    acc[year].push(post);
+
+    return acc;
+  },
+  {} as Record<number, Post[]>,
+);
 ---
 
 <Layout>
-	<Welcome />
+  <div class="min-h-screen bg-[#fdfaf4] text-[#3b3228] font-serif">
+    <div class="max-w-3xl mx-auto px-6 pt-16 pb-10">
+      <!-- HEADER -->
+      <header class="mb-6 text-center">
+        <h1 class="text-5xl font-bold tracking-tight">alexei's blog</h1>
+        <p class="text-[#7c6f5a] text-3xl mt-5">
+          Writing about code and software
+        </p>
+      </header>
+
+      <!-- ABOUT -->
+      <section class="mb-12 text-center">
+        <p class="text-2xl text-[#3b3228] max-w-xl mx-auto leading-relaxed">
+          I'm Alexei, a software developer interested in systems, tooling, and
+          building things from scratch. This blog is where I write about what I
+          learn along the way.
+        </p>
+      </section>
+
+      <!-- POSTS GROUPED BY YEAR -->
+      <main class="space-y-14">
+        {
+          Object.entries(grouped)
+            .sort((a, b) => Number(b[0]) - Number(a[0]))
+            .map(([year, posts]: [string, Post[]]) => {
+              const y = Number(year);
+
+              return (
+                <div>
+                  {/* YEAR HEADER */}
+                  <h2 class="text-5xl font-bold text-[#3b3228] mb-3">{y}</h2>
+
+                  <div class="space-y-4">
+                    {posts.map((post) => (
+                      <a
+                        href={`/blog/${post.slug}`}
+                        class="block px-4 py-3 bg-[#fdfaf4] border border-[#d9cfc0] rounded-lg shadow-sm hover:shadow-md transition"
+                      >
+                        <article class="flex items-center gap-6">
+                          <time class="w-24 text-center text-xl text-[#7c6f5a] shrink-0">
+                            {formatDateNoYear(post.created_at)}
+                          </time>
+
+                          <div class="flex-1 min-w-0">
+                            <h2 class="text-2xl font-semibold text-[#3b3228] leading-tight">
+                              {post.title}
+                            </h2>
+
+                            {post.description && (
+                              <p class="text-lg text-[#7c6f5a] mt-1 line-clamp-1 leading-snug">
+                                {post.description}
+                              </p>
+                            )}
+                          </div>
+                        </article>
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              );
+            })
+        }
+      </main>
+    </div>
+  </div>
 </Layout>
