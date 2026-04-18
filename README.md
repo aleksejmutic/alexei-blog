@@ -1,3 +1,3 @@
 # alexei's blog
 
-A personal blog where I write about code and software development.
+A personal blog where I write about my software projects and coding in general.
