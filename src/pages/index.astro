@@ -3,7 +3,7 @@ import Layout from "../layouts/PublicLayout.astro";
 import { supabase } from "../lib/supabase";
 import { formatDateNoYear } from "../lib/formatDate";
 
-export const prerender = false;
+export const prerender = true;
 
 type Post = {
   id: string;
@@ -50,16 +50,32 @@ const grouped = safePosts.reduce(
       </header>
 
       <!-- ABOUT -->
-      <section class="mb-12 text-center">
+      <section class="mb-10 text-center">
         <p class="text-2xl text-[#3b3228] max-w-xl mx-auto leading-relaxed">
-          I'm Alexei, a software developer interested in systems, tooling, and
-          building things from scratch. This blog is where I write about what I
-          learn along the way.
+          I'm Aleksej, a Software Developer who digs into hardware, networking,
+          security, and occasionally rants about how we write software. This is
+          where I write about what I learn.
         </p>
       </section>
 
+      <!-- SEARCH -->
+      <div class="mb-5 relative">
+        <input
+          id="search"
+          type="text"
+          placeholder="Search posts..."
+          class="w-full bg-white border border-[#d9cfc0] rounded-lg px-4 py-3 text-xl text-[#3b3228] font-serif focus:outline-none focus:ring-2 focus:ring-[#7c6f5a] pr-10"
+        />
+        <button
+          id="clear"
+          class="absolute right-3 top-1/2 -translate-y-1/2 text-[#7c6f5a] hover:text-[#3b3228] transition hidden text-2xl"
+        >
+          ×
+        </button>
+      </div>
+
       <!-- POSTS GROUPED BY YEAR -->
-      <main class="space-y-14">
+      <main class="space-y-14" id="posts-container">
         {
           Object.entries(grouped)
             .sort((a, b) => Number(b[0]) - Number(a[0]))
@@ -104,4 +120,42 @@ const grouped = safePosts.reduce(
       </main>
     </div>
   </div>
+  <script>
+    const search = document.getElementById("search") as HTMLInputElement;
+    const clear = document.getElementById("clear") as HTMLButtonElement;
+    const posts = document.querySelectorAll("a[href^='/blog/']");
+    const yearGroups = document.querySelectorAll("#posts-container > div");
+
+    search.addEventListener("input", () => {
+      const query = search.value.toLowerCase().trim();
+
+      // Show/hide clear button
+      clear.classList.toggle("hidden", query === "");
+
+      posts.forEach((post) => {
+        const title =
+          post.querySelector("h2")?.textContent?.toLowerCase() ?? "";
+        const matches = title.includes(query);
+        (post as HTMLElement).style.display = matches ? "" : "none";
+      });
+
+      // Hide year groups with no visible posts
+      yearGroups.forEach((group) => {
+        const visiblePosts = group.querySelectorAll(
+          "a[href^='/blog/']:not([style*='display: none'])",
+        );
+        (group as HTMLElement).style.display =
+          visiblePosts.length > 0 ? "" : "none";
+      });
+    });
+
+    clear.addEventListener("click", () => {
+      search.value = "";
+      clear.classList.add("hidden");
+      posts.forEach((post) => ((post as HTMLElement).style.display = ""));
+      yearGroups.forEach(
+        (group) => ((group as HTMLElement).style.display = ""),
+      );
+    });
+  </script>
 </Layout>
