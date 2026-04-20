@@ -4,7 +4,6 @@ import { supabase } from "../../lib/supabase";
 import { marked } from "marked";
 import { formatDate } from "../../lib/formatDate";
 
-
 export const prerender = false;
 
 const { slug } = Astro.params;
@@ -19,7 +18,7 @@ const { data: post } = await supabase
 if (!post) {
     return Astro.redirect("/404");
 }
-  
+
 //Custom marked renderer
 const renderer = new marked.Renderer();
 
@@ -36,7 +35,7 @@ const htmlContent = await marked.parse(post.content);
 
 <Layout>
     <div class="min-h-screen bg-[#fdfaf4] text-[#3b3228] font-serif">
-        <div class="max-w-2xl mx-auto px-6 py-10 pb-24">
+        <div class="max-w-[860px] mx-auto px-6 py-10 pb-24">
             <header class="mb-10 text-left">
                 <a
                     href="/"
@@ -56,7 +55,7 @@ const htmlContent = await marked.parse(post.content);
                 </time>
 
                 <div
-                    class="article-content text-[#3b3228] text-2xl leading-relaxed space-y-6 text-center"
+                    class="article-content text-[#3b3228] text-2xl leading-relaxed space-y-6 text-left"
                     set:html={htmlContent}
                 />
             </article>
@@ -79,5 +78,21 @@ const htmlContent = await marked.parse(post.content);
     .article-content li {
         position: relative;
         z-index: 0;
+    }
+
+    .article-content h2 {
+        font-size: 1.75rem;
+        font-weight: 700;
+        margin-top: 2rem;
+        margin-bottom: 0.75rem;
+        text-align: center;
+    }
+
+    .article-content h3 {
+        font-size: 1.4rem;
+        font-weight: 600;
+        margin-top: 1.5rem;
+        margin-bottom: 0.5rem;
+        text-align: center;
     }
 </style>
