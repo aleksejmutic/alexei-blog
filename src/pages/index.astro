@@ -3,7 +3,7 @@ import Layout from "../layouts/PublicLayout.astro";
 import { supabase } from "../lib/supabase";
 import { formatDateNoYear } from "../lib/formatDate";
 
-export const prerender = true;
+export const prerender = false;
 
 type Post = {
   id: string;
