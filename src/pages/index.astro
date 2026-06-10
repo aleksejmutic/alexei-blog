@@ -52,9 +52,10 @@ const grouped = safePosts.reduce(
       <!-- ABOUT -->
       <section class="mb-10 text-center">
         <p class="text-2xl text-[#3b3228] max-w-xl mx-auto leading-relaxed">
-          I'm Aleksej, a Software Developer who likes to read about hardware, networking,
-          security, and occasionally rants about how we write software. I also really like using Linux. This is
-          where I write about what I learn. 
+          I'm Aleksej, a Software Developer who likes to read about hardware,
+          networking, security, and occasionally rants about how we write
+          software. I also really like using Linux. This is where I write about
+          what I learn.
         </p>
       </section>
 
@@ -158,4 +159,32 @@ const grouped = safePosts.reduce(
       );
     });
   </script>
+  <style>
+    @media (max-width: 640px) {
+      header h1 {
+        font-size: 2rem;
+      }
+
+      header p {
+        font-size: 1.5rem;
+      }
+
+      section p {
+        font-size: 1.1rem;
+      }
+
+      article h2 {
+        font-size: 1.2rem;
+      }
+
+      article p {
+        font-size: 1rem;
+      }
+
+      article time {
+        font-size: 0.9rem;
+        width: auto;
+      }
+    }
+  </style>
 </Layout>
