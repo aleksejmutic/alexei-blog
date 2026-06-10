@@ -34,7 +34,9 @@ const htmlContent = await marked.parse(post.content);
 ---
 
 <Layout>
-    <div class="min-h-screen bg-[#fdfaf4] text-[#3b3228] font-serif">
+    <div
+        class="min-h-screen bg-[#fdfaf4] text-[#3b3228] font-serif overflow-x-hidden"
+    >
         <div class="max-w-[860px] mx-auto px-6 py-10 pb-24">
             <header class="mb-10 text-left">
                 <a
@@ -98,9 +100,26 @@ const htmlContent = await marked.parse(post.content);
     .article-content code {
         background-color: #e8e0d0;
         color: #3b3228;
-        padding: 0rem 0rem;
+        padding: 0.1rem 0.3rem;
         border-radius: 4px;
         font-size: 0.95em;
         font-family: monospace;
+        word-break: break-all;
+        white-space: pre-wrap;
+        overflow-wrap: break-word;
+    }
+    .article-content pre {
+        overflow-x: auto;
+        white-space: pre-wrap;
+        word-break: break-all;
+        background-color: #e8e0d0;
+        padding: 1rem;
+        border-radius: 6px;
+    }
+
+    .article-content pre code {
+        background-color: transparent;
+        padding: 0;
+        font-size: 0.9em;
     }
 </style>
